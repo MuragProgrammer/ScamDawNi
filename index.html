@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Information Form</title>
-    <style>/* Apply a gradient background */
+    <style> 
+    /* General styling */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -13,35 +14,37 @@
             height: 100vh;
             background: linear-gradient(135deg, #89f7fe, #66a6ff);
             margin: 0;
+            overflow: hidden;
+            flex-direction: column;
         }
-        
-        /* Glassmorphism effect for the form */
+
+        /* Responsive container */
         .container {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 350px;
+            width: 90%;
+            max-width: 350px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        
-        /* Styling for the header */
-        h1 {
+
+        h1, h2 {
             font-size: 22px;
             color: #fff;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
         }
-        
+
         p {
             font-size: 14px;
             color: #f8f8f8;
         }
-        
-        /* Style input fields */
+
+        /* Input and form elements */
         input, textarea {
-            width: 90%;
+            width: 100%;
             padding: 12px;
             margin-top: 8px;
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -52,20 +55,12 @@
             outline: none;
             transition: all 0.3s ease;
         }
-        
-        /* Input focus effect */
+
         input:focus, textarea:focus {
             border-color: #66a6ff;
             box-shadow: 0px 0px 10px rgba(102, 166, 255, 0.7);
         }
-        
-        /* Style the textarea */
-        textarea {
-            resize: none;
-            height: 80px;
-        }
-        
-        /* Fancy animated submit button */
+
         button {
             width: 100%;
             padding: 12px;
@@ -81,33 +76,75 @@
             position: relative;
             overflow: hidden;
         }
-        
-        /* Button hover effect */
+
         button:hover {
             background: linear-gradient(135deg, #0056b3, #004080);
             transform: scale(1.05);
         }
-        
-        /* Adding a subtle glowing effect */
-        button::after {
-            content: "";
+
+        /* Popup Styling */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(30deg, #a4cffd, #0056b3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -55%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        /* Confetti effect */
+        .confetti {
             position: absolute;
-            top: -100%;
-            left: -100%;
-            width: 250%;
-            height: 250%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, transparent 80%);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            width: 10px;
+            height: 10px;
+            background: red;
+            opacity: 0.8;
+            animation: confetti-fall linear infinite;
         }
-        
-        button:hover::after {
-            opacity: 1;
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-150vh) rotate(0deg); } /* Start way above viewport */
+            100% { transform: translateY(100vh) rotate(360deg); } /* Falls down */
         }
-        </style>
+
+        /* Media query for smaller screens */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+            h1{
+                font-size: 18px;
+            }
+            p {
+                font-size: 12px;
+            }
+            h2{
+                font-size: 16px;
+            }
+            input{
+                width: 80%;
+            }
+            .container{
+                max-width: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="overlay">
+    <div class="overlay" >
+    
     <header>
         <h1>Congratulations you have won $100000</h1>
         <p>Please fill out this form to complete your registration</p>
@@ -125,6 +162,11 @@
             </form>             
         </div>
     </div>
+    <div class="popup" id="congratsPopup">
+        <h2>🎉 Congratulations! 🎉</h2>
+        <p>The money has been sent to your account!</p>
+    </div>
+
     
 
     <script>
@@ -148,12 +190,37 @@
     
             if (result.success) {
                 // Clear form on success
+                showPopup()
                 document.getElementById("infoForm").reset();
             }
         } catch (error) {
             alert("An error occurred. Please try again.");
         }
     });
+    function showPopup() {
+            const popup = document.getElementById("congratsPopup");
+            popup.style.display = "block";
+
+            // Confetti effect
+            for (let i = 0; i < 100; i++) {
+                let confetti = document.createElement("div");
+                confetti.classList.add("confetti");
+                confetti.style.left = Math.random() * 100 + "vw";
+                confetti.style.backgroundColor = 
+                    ["red", "blue", "yellow", "green", "orange", "pink"][Math.floor(Math.random() * 6)];
+                confetti.style.animationDuration = Math.random() * 2 + 1 + "s";
+                document.body.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+
+            // Auto-hide popup
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 3000);
+        }
     
     </script>
 </body>
